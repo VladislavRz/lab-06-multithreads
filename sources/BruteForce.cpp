@@ -36,9 +36,9 @@ void get_0000() {
   bool exit_flag = false;
   std::string hash;
   std::string entry_str;
-  while(!exit_flag) {
+  while (!exit_flag) {
     hash = picosha2::hash256_hex_string(randomiser(entry_str));
-    if(!last_4_zero(hash)) {
+    if (!last_4_zero(hash)) {
       th_mute.lock();
       BOOST_LOG_TRIVIAL(trace) << "[" << entry_str << "] " << hash;
       th_mute.unlock();
@@ -59,9 +59,9 @@ void get_0000_json() {
   std::string entry_str;
   time_t start = clock();
   time_t end;
-  while(!exit_flag) {
+  while (!exit_flag) {
     hash = picosha2::hash256_hex_string(randomiser(entry_str));
-    if(!last_4_zero(hash)) {
+    if (!last_4_zero(hash)) {
       th_mute.lock();
       BOOST_LOG_TRIVIAL(trace) << "[" << entry_str << "] " << hash;
       th_mute.unlock();
@@ -93,8 +93,7 @@ void log_init() {
               sinks::file::rotation_at_time_point(0, 0, 0),
           keywords::filter =
               logging::trivial::severity <= logging::trivial::trace,
-          keywords::format = "[%ThreadID%] %Message%"
-      );
+          keywords::format = "[%ThreadID%] %Message%");
 
   logging::add_common_attributes();
   logging::add_file_log
@@ -106,8 +105,7 @@ void log_init() {
               sinks::file::rotation_at_time_point(0, 0, 0),
           keywords::filter =
               logging::trivial::severity >= logging::trivial::info,
-          keywords::format = "[%ThreadID%] %Message%"
-      );
+          keywords::format = "[%ThreadID%] %Message%");
 
   logging::add_console_log(std::cout,
                            keywords::format = "[%ThreadID%]"
@@ -141,7 +139,6 @@ void parse_args(int argc, char* argv[]) {
 }
 
 std::vector<std::future<void>> create_threads(unsigned int n) {
-
   std::vector<std::future<void>> threads(n);
   for (size_t i = 0; i < n; ++i) {
     threads.push_back(std::async(std::launch::async, get_0000));
@@ -150,22 +147,22 @@ std::vector<std::future<void>> create_threads(unsigned int n) {
   return threads;
 }
 
-std::vector<std::future<void>> create_threads(long int n) {
+std::vector<std::future<void>> create_threads(long n) {
   if (n <= 0) throw std::runtime_error("incorrect number of threads");
 
   std::vector<std::future<void>> threads(n);
-  for (long int i = 0; i < n; ++i) {
+  for (long i = 0; i < n; ++i) {
     threads.push_back(std::async(std::launch::async, get_0000));
   }
 
   return threads;
 }
 
-std::vector<std::future<void>> create_threads_json(long int n) {
+std::vector<std::future<void>> create_threads_json(long n) {
   if (n <= 0) throw std::runtime_error("incorrect number of threads");
 
   std::vector<std::future<void>> threads(n);
-  for (long int i = 0; i < n; ++i) {
+  for (long i = 0; i < n; ++i) {
     threads.push_back(std::async(std::launch::async, get_0000_json));
   }
 
