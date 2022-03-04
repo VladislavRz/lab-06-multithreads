@@ -1,10 +1,9 @@
-// Copyright 2021 Your Name <your_email>
-
-#include <stdexcept>
+// Copyright 2022 VladislavRz <rzhevskii_vladislav@mail.ru>
 
 #include <gtest/gtest.h>
 
-#include <example.hpp>
+#include <BruteForce.hpp>
+#include <stdexcept>
 
 TEST(Example, EmptyTest) {
     EXPECT_TRUE(true);

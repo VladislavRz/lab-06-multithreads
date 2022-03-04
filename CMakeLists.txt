@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.18)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+#set(Boost_USE_STATIC_LIBS ON)
 
 option(BUILD_TESTS "Build tests" ON)
 option(BUILD_DOCS "Build documentation" OFF)
@@ -29,20 +30,23 @@ string(APPEND CMAKE_CXX_FLAGS " -Wshadow -Wnon-virtual-dtor")
 # new versions of cmake contain gtest search files
 # commented out to increase the build speed.
 
-hunter_add_package(Boost COMPONENTS log)
+hunter_add_package(Boost COMPONENTS filesystem log system thread log)
 hunter_add_package(Boost COMPONENTS program_options)
+hunter_add_package(nlohmann_json)
 hunter_add_package(GTest)
-find_package(Boost CONFIG REQUIRED log)
+
+find_package(Boost CONFIG REQUIRED filesystem log log_setup system thread)
 find_package(Boost CONFIG REQUIRED program_options)
+find_package(nlohmann_json CONFIG REQUIRED)
 find_package(GTest CONFIG REQUIRED)
 
 add_library(${PROJECT_NAME} STATIC
   # enum your files and delete this comment
-  ${CMAKE_CURRENT_SOURCE_DIR}/sources/example.cpp
-)
+        ${CMAKE_CURRENT_SOURCE_DIR}/sources/BruteForce.cpp)
 
 add_executable(demo
   ${CMAKE_CURRENT_SOURCE_DIR}/demo/main.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/sources/BruteForce.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
@@ -50,10 +54,20 @@ target_include_directories(${PROJECT_NAME} PUBLIC
   "$<INSTALL_INTERFACE:include>"
 )
 
+target_include_directories(${PROJECT_NAME} PUBLIC
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/third-party/PicoSHA2>"
+        "$<INSTALL_INTERFACE:third-party/PicoSHA2>"
+)
+
 target_link_libraries(demo ${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME}
         Boost::log
-        Boost::program_options)
+        Boost::log_setup
+        Boost::program_options
+        Boost::filesystem
+        Boost::system
+        Boost::thread
+)
 
 if(BUILD_TESTS)
   add_executable(tests

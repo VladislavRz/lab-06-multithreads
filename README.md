@@ -50,7 +50,7 @@ SHA256("1234") = "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846
 
 const std::vector<unsigned char> data_vector{...}; // вектор
 const std::string hash = picosha2::hash256_hex_string(data_vector);
-
+         
 const std::array<unsigned char, 4> data_array{...}; // массив
 const std::string hash = picosha2::hash256_hex_string(data_array);
 
