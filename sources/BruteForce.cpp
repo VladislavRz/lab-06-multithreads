@@ -27,7 +27,7 @@ std::vector<unsigned char> randomiser(std::string& str) {
   for (size_t i = 0; i < ENTRY_SIZE; ++i) {
     c = static_cast<unsigned char>(alphabet[rand()%15]);
     data.push_back(c);
-    str.push_back(c);
+    str.push_back(static_cast<char>(c));
   }
   return data;
 }
@@ -67,7 +67,7 @@ void get_0000_json() {
       th_mute.unlock();
     } else {
       end = clock();
-      j["timestamp"] = static_cast<double>((end - start) / CLOCKS_PER_SEC);
+      j["timestamp"] = (end - start) / CLOCKS_PER_SEC;
       j["hash"] = hash;
       j["data"] = entry_str;
 
@@ -138,31 +138,22 @@ void parse_args(int argc, char* argv[]) {
   }
 }
 
-std::vector<std::future<void>> create_threads(unsigned int n) {
+std::vector<std::future<void>> create_threads(int64_t n) {
+  if (n <= 0) throw std::runtime_error("incorrect number of threads");
+
   std::vector<std::future<void>> threads(n);
-  for (size_t i = 0; i < n; ++i) {
+  for (int64_t i = 0; i < n; ++i) {
     threads.push_back(std::async(std::launch::async, get_0000));
   }
 
   return threads;
 }
 
-std::vector<std::future<void>> create_threads(long n) {
+std::vector<std::future<void>> create_threads_json(int64_t n) {
   if (n <= 0) throw std::runtime_error("incorrect number of threads");
 
   std::vector<std::future<void>> threads(n);
-  for (long i = 0; i < n; ++i) {
-    threads.push_back(std::async(std::launch::async, get_0000));
-  }
-
-  return threads;
-}
-
-std::vector<std::future<void>> create_threads_json(long n) {
-  if (n <= 0) throw std::runtime_error("incorrect number of threads");
-
-  std::vector<std::future<void>> threads(n);
-  for (long i = 0; i < n; ++i) {
+  for (int64_t i = 0; i < n; ++i) {
     threads.push_back(std::async(std::launch::async, get_0000_json));
   }
 

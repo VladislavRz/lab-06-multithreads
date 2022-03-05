@@ -15,6 +15,7 @@
 #include <ctime>
 #include <vector>
 #include <string>
+#include <cstdint>
 
 #include "../third-party/PicoSHA2/picosha2.h"
 
@@ -42,9 +43,8 @@ void log_init();
 
 // Create n threads
 void parse_args(int argc, char* argv[]);
-std::vector<std::future<void>> create_threads(unsigned int n);
-std::vector<std::future<void>> create_threads(long n);
-std::vector<std::future<void>> create_threads_json(long n);
+std::vector<std::future<void>> create_threads(int64_t n);
+std::vector<std::future<void>> create_threads_json(int64_t n);
 
 // Catch Ctrl + C
 void sigint(int sig);
