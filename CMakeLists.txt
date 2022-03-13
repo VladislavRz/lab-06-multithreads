@@ -31,12 +31,10 @@ string(APPEND CMAKE_CXX_FLAGS " -Wshadow -Wnon-virtual-dtor")
 # commented out to increase the build speed.
 
 hunter_add_package(Boost COMPONENTS filesystem log system thread log)
-hunter_add_package(Boost COMPONENTS program_options)
 hunter_add_package(nlohmann_json)
 hunter_add_package(GTest)
 
 find_package(Boost CONFIG REQUIRED filesystem log log_setup system thread)
-find_package(Boost CONFIG REQUIRED program_options)
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(GTest CONFIG REQUIRED)
 
@@ -63,7 +61,6 @@ target_link_libraries(demo ${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME}
         Boost::log
         Boost::log_setup
-        Boost::program_options
         Boost::filesystem
         Boost::system
         Boost::thread

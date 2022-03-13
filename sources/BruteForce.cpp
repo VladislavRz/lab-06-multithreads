@@ -25,7 +25,7 @@ std::vector<unsigned char> randomiser(std::string& str) {
   }
 
   for (size_t i = 0; i < ENTRY_SIZE; ++i) {
-    c = static_cast<unsigned char>(alphabet[rand()%15]);
+    c = static_cast<unsigned char>(alphabet[rand()%ALPHABET_SIZE]);
     data.push_back(c);
     str.push_back(static_cast<char>(c));
   }
@@ -115,14 +115,17 @@ void log_init() {
 void parse_args(int argc, char* argv[]) {
   std::vector<std::future<void>> threads;
   if (argc == 1) {
-    create_threads(std::thread::hardware_concurrency());
+    threads = create_threads(std::thread::hardware_concurrency());
   } else if (argc == 2) {
-    create_threads(strtol(argv[1], nullptr, 10));
+    threads = create_threads(strtol(argv[1], nullptr, 10));
   } else if (argc == 3) {
-    create_threads_json(strtol(argv[1], nullptr, 10));
+    threads = create_threads_json(strtol(argv[1], nullptr, 10));
   } else {
     throw std::runtime_error("incorrect arguments");
   }
+
+  std::for_each(threads.begin(), threads.end(),
+                std::mem_fn(&std::future<void>::wait));
 
   if (!j_arr.empty()) {
     std::string str = argv[2];
@@ -131,10 +134,10 @@ void parse_args(int argc, char* argv[]) {
     if (f.is_open()) {
       f << j_arr.dump(4);
       f.close();
+    } else {
+      throw std::runtime_error("error while open file");
     }
     j_arr.clear();
-  } else {
-    throw std::runtime_error("error while open file");
   }
 }
 
@@ -143,7 +146,7 @@ std::vector<std::future<void>> create_threads(int64_t n) {
 
   std::vector<std::future<void>> threads(n);
   for (int64_t i = 0; i < n; ++i) {
-    threads.push_back(std::async(std::launch::async, get_0000));
+    threads[i] = std::async(std::launch::async, get_0000);
   }
 
   return threads;
@@ -154,7 +157,7 @@ std::vector<std::future<void>> create_threads_json(int64_t n) {
 
   std::vector<std::future<void>> threads(n);
   for (int64_t i = 0; i < n; ++i) {
-    threads.push_back(std::async(std::launch::async, get_0000_json));
+    threads[i] = std::async(std::launch::async, get_0000_json);
   }
 
   return threads;

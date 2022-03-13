@@ -24,6 +24,7 @@
 
 #define HASH_SIZE 60
 #define ENTRY_SIZE 5
+#define ALPHABET_SIZE 16
 
 namespace logging = boost::log;
 namespace keywords = boost::log::keywords;
