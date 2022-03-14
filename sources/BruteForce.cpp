@@ -39,13 +39,13 @@ void get_0000() {
   while (!exit_flag) {
     hash = picosha2::hash256_hex_string(randomiser(entry_str));
     if (!last_4_zero(hash)) {
-      th_mute.lock();
+     // th_mute.lock();
       BOOST_LOG_TRIVIAL(trace) << "[" << entry_str << "] " << hash;
-      th_mute.unlock();
+     // th_mute.unlock();
     } else {
-      th_mute.lock();
+     // th_mute.lock();
       BOOST_LOG_TRIVIAL(info) << "[" << entry_str << "] " << hash;
-      th_mute.unlock();
+     // th_mute.unlock();
     }
 
     exit_flag = stop_flag;
@@ -62,17 +62,17 @@ void get_0000_json() {
   while (!exit_flag) {
     hash = picosha2::hash256_hex_string(randomiser(entry_str));
     if (!last_4_zero(hash)) {
-      th_mute.lock();
+      //th_mute.lock();
       BOOST_LOG_TRIVIAL(trace) << "[" << entry_str << "] " << hash;
-      th_mute.unlock();
+      //th_mute.unlock();
     } else {
       end = clock();
       j["timestamp"] = (end - start) / CLOCKS_PER_SEC;
       j["hash"] = hash;
       j["data"] = entry_str;
 
-      th_mute.lock();
       BOOST_LOG_TRIVIAL(info) << "[" << entry_str << "] " << hash;
+      th_mute.lock();
       j_arr.push_back(j);
       th_mute.unlock();
       j.clear();
